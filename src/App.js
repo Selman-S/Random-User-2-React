@@ -19,7 +19,8 @@ function App() {
   const [desc, setDesc] = useState('')
   const [source, setSource] = useState([])
   const [loading, setLoading] = useState(true)
-  const [addList, setAddList] = useState([])
+  const [add, setAdd] = useState([])
+  const [control, setControl] = useState([]);
 
   const getUsers = async () => {
     try {
@@ -36,7 +37,7 @@ function App() {
   useEffect(() => {
     getUsers()
   }, [])
-  console.log(source)
+
 
   const handleUser = () => {
     setTitle('My name is')
@@ -45,11 +46,16 @@ function App() {
   }
 
   const addUser = name => {
-    let newList = addList
-   newList.push(source[0])
-   console.log(newList);
-   
-   
+  const newObj = {
+    name:source[0].name.first,
+    email:source[0].email,
+    phone:source[0].phone,
+    age:source[0].dob.age
+  }
+  if(!control.includes(source[0].email)){
+    setAdd([...add,newObj])
+    setControl([...control,source[0].email])
+  }
 
     
 
@@ -72,7 +78,7 @@ function App() {
           <div className="block">
             <div className="container">
               <img
-                src={source[0].picture.medium}
+                src={source[0].picture.medium||defaultImage}
                 alt="random user"
                 className="user-img"
               />
@@ -104,7 +110,7 @@ function App() {
                     setTitle('My Age is')
                   }}
                 >
-                  <img src={womanAgeSvg} alt="age" id="iconImg" />
+                  <img src={source[0].gender === 'female' ? womanAgeSvg : manAgeSvg} alt="age" id="iconImg" />
                 </button>
                 <button
                   className="icon"
@@ -161,13 +167,17 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="body-tr">
-                 
-                    <td >Firstname</td>
-                <td >Email</td>
-                <td >Phone</td>
-                <td >Age</td>
-                  </tr>
+                {add.map((item) => {
+                    const { name, email, phone, age } = item;
+                    return (
+                      <tr className="body-tr">
+                        <td>{name}</td>
+                        <td>{email}</td>
+                        <td>{phone}</td>
+                        <td>{age}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
